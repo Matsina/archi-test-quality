@@ -42,8 +42,7 @@ export default class OrderController {
   @Post(':id/pay')
   async payOrder(@Param('id') id: string): Promise<Order> {
     try {
-      const paidOrder = this.payOrderService.payOrder(id);
-      return paidOrder;
+      return this.payOrderService.payOrder(id);
     } catch (error) {
       throw new NotFoundException(error.message);
     }
