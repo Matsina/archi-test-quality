@@ -1,10 +1,11 @@
 import {
+  BadRequestException,
   Controller,
   Get,
-  Post,
   Body,
-  BadRequestException,
+  Post,
 } from '@nestjs/common';
+import { Order } from 'src/order/domain/entity/order.entity';
 
 interface ItemDetail {
   productName: string;
@@ -40,18 +41,26 @@ export default class OrderController {
       throw new BadRequestException('Missing required fields');
     }
 
-    if (items.length > 5) {
+    if (items.length > Order.MAX_ITEMS) {
       throw new BadRequestException(
         'Cannot create order with more than 5 items',
       );
     }
 
+    const totalAmount = this.calculateOrderAmount(items);
+
+    return 'OK';
+  }
+
+  private calculateOrderAmount(items: ItemDetail[]): number {
     const totalAmount = items.reduce((sum, item) => sum + item.price, 0);
-    if (totalAmount < 10) {
+
+    if (totalAmount < Order.AMOUNT_MINIMUM) {
       throw new BadRequestException(
         'Cannot create order with total amount less than 10€',
       );
     }
-    return 'OK';
+
+    return totalAmount;
   }
 }
