@@ -16,8 +16,7 @@ interface CreateOrder {
 @Injectable()
 export class CreateOrderService {
   public createOrder(createOrderDto: CreateOrder): string {
-    const { items, customerName, shippingAddress, invoiceAddress } =
-      createOrderDto;
+    const { items } = createOrderDto;
 
     this.validateFields(createOrderDto);
     this.validateItemCount(items);

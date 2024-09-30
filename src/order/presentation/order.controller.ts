@@ -1,5 +1,14 @@
-import { Controller, Get, Body, Post } from '@nestjs/common';
-import { CreateOrderService } from '../use_case/create-order.service';
+import {
+  Controller,
+  Get,
+  Body,
+  Post,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateOrderService } from '../use-case/create-order.service';
+import { PayOrderService } from '../use-case/pay-order.service';
+import { Order } from '../domain/entity/order.entity';
 
 interface ItemDetail {
   productName: string;
@@ -15,7 +24,10 @@ interface CreateOrder {
 
 @Controller('/orders')
 export default class OrderController {
-  constructor(private readonly createOrderService: CreateOrderService) {}
+  constructor(
+    private readonly createOrderService: CreateOrderService,
+    private readonly payOrderService: PayOrderService,
+  ) {}
 
   @Get()
   async getOrders() {
@@ -23,7 +35,17 @@ export default class OrderController {
   }
 
   @Post()
-  async createOrder(@Body() createOrderDto: CreateOrder): Promise<string> {
-    return this.createOrderService.createOrder(createOrderDto);
+  async createOrder(@Body() body: CreateOrder): Promise<string> {
+    return this.createOrderService.createOrder(body);
+  }
+
+  @Post(':id/pay')
+  async payOrder(@Param('id') id: string): Promise<Order> {
+    try {
+      const paidOrder = this.payOrderService.payOrder(id);
+      return paidOrder;
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 }
