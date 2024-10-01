@@ -20,6 +20,7 @@ export enum OrderStatus {
 export class Order {
   static MAX_ITEMS = 5;
   static AMOUNT_MINIMUM = 10;
+  static AMOUNT_MAXIMUM = 500;
 
   @CreateDateColumn()
   @Expose({ groups: ['group_orders'] })
@@ -66,7 +67,7 @@ export class Order {
       throw new Error('Order can only be paid if it is in PENDING status.');
     }
 
-    if (this.price > 500) {
+    if (this.price > Order.AMOUNT_MAXIMUM) {
       throw new Error('Order amount exceeds the maximum limit of 500€.');
     }
     this.status = OrderStatus.PAID;
