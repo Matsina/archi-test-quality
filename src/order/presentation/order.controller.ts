@@ -11,6 +11,7 @@ import { PayOrderService } from '../use-case/pay-order.service';
 import { Order } from '../domain/entity/order.entity';
 import { SetShippingAddressService } from '../use-case/set-shipping-address.service';
 import { SetInvoiceAddressService } from '../use-case/set-invoice-address.service';
+import { CancelOrderService } from '../use-case/cancel-order.service';
 
 interface ItemDetail {
   productName: string;
@@ -31,6 +32,7 @@ export default class OrderController {
     private readonly payOrderService: PayOrderService,
     private readonly setShippingAddressService: SetShippingAddressService,
     private readonly setInvoiceAddressService: SetInvoiceAddressService,
+    private readonly cancelOrderService: CancelOrderService,
   ) {}
 
   @Get()
@@ -68,5 +70,13 @@ export default class OrderController {
       id,
       invoiceAddress,
     );
+  }
+
+  @Post()
+  async cancelOrder(
+    @Param('id') id: string,
+    @Body('cancellationReason') cancellationReason: string,
+  ): Promise<Order> {
+    return await this.cancelOrderService.cancelOrder(id, cancellationReason);
   }
 }

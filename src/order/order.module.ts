@@ -8,6 +8,7 @@ import { CreateOrderService } from './use-case/create-order.service';
 import { PayOrderService } from './use-case/pay-order.service';
 import { SetShippingAddressService } from './use-case/set-shipping-address.service';
 import { SetInvoiceAddressService } from './use-case/set-invoice-address.service';
+import { CancelOrderService } from './use-case/cancel-order.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, OrderItem])],
@@ -20,7 +21,8 @@ import { SetInvoiceAddressService } from './use-case/set-invoice-address.service
     CreateOrderService,
     PayOrderService,
     SetShippingAddressService,
-    SetInvoiceAddressService
+    SetInvoiceAddressService,
+    CancelOrderService
   ],
 })
 export class OrderModule {}

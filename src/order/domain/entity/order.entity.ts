@@ -77,6 +77,14 @@ export class Order {
   @Expose({ groups: ['group_orders'] })
   private paidAt: Date | null;
 
+  @Column({ nullable: true })
+  @Expose({ groups: ['group_orders'] })
+  private cancelAt: Date | null;
+
+  @Column({ nullable: true })
+  @Expose({ groups: ['group_orders'] })
+  private cancellationReason: String | null;
+
   public constructor(CreateOrder: CreateOrder) {
     if (!CreateOrder) {
       this.createdAt = new Date();
@@ -157,6 +165,18 @@ export class Order {
     }
     this.status = OrderStatus.PAID;
     this.paidAt = new Date('NOW');
+  }
+
+  cancel(cancellationReason: string): void {
+    if (this.status === OrderStatus.SHIPPED) {
+      throw new Error(
+        'La commande a été livrée, elle ne peut donc pas être annulée',
+      );
+    }
+
+    this.cancellationReason = cancellationReason;
+    this.status = OrderStatus.CANCELED;
+    this.cancelAt = new Date('NOW');
   }
 
   setShippingAddress(shippingAddress: string): void {
