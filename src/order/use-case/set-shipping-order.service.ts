@@ -4,13 +4,13 @@ import { Order } from '../domain/entity/order.entity';
 import OrderRepository from '../infrastructure/order.repository';
 
 @Injectable()
-export class ShippingOrderService {
+export class SetShippingOrderService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: OrderRepository,
   ) {}
 
-  public async shipOrder(
+  public async shippingAddress(
     orderId: string,
     shippingAddress: string,
   ): Promise<Order> {
@@ -20,7 +20,7 @@ export class ShippingOrderService {
       throw new NotFoundException('Pas de commande');
     }
 
-    order.ship(shippingAddress);
+    order.setShippingAddress(shippingAddress);
 
     return this.orderRepository.save(order);
   }

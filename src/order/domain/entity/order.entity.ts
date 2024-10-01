@@ -19,10 +19,10 @@ export enum OrderStatus {
 @Entity()
 export class Order {
   static MAX_ITEMS = 5;
-  static MIN_ITEMS = 3
+  static MIN_ITEMS = 3;
   static AMOUNT_MINIMUM = 10;
   static AMOUNT_MAXIMUM = 500;
-  static SHIPPING_COST = 5
+  static SHIPPING_COST = 5;
 
   @CreateDateColumn()
   @Expose({ groups: ['group_orders'] })
@@ -76,7 +76,7 @@ export class Order {
     this.paidAt = new Date('NOW');
   }
 
-  ship(shippingAddress: string): void {
+  setShippingAddress(shippingAddress: string): void {
     if (this.orderItems.length <= Order.MIN_ITEMS) {
       throw new Error(
         'L’ajout de l’adresse de livraison n’est possible que si la commande contient plus de 3 items.',
