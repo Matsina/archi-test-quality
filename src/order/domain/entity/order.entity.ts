@@ -80,7 +80,6 @@ export class Order {
   public constructor(CreateOrder: CreateOrder) {
     if (!CreateOrder) {
       this.createdAt = new Date();
-      this.id = '1';
       this.price = 0;
       this.customerName = 'Sample Text';
       this.shippingAddress = null;
