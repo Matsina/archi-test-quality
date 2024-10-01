@@ -4,7 +4,7 @@ import { Order } from '../domain/entity/order.entity';
 import OrderRepository from '../infrastructure/order.repository';
 
 @Injectable()
-export class SetShippingOrderService {
+export class SetShippingAddressService {
   constructor(
     @InjectRepository(Order)
     private readonly orderRepository: OrderRepository,

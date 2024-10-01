@@ -9,7 +9,7 @@ import {
 import { CreateOrderService } from '../use-case/create-order.service';
 import { PayOrderService } from '../use-case/pay-order.service';
 import { Order } from '../domain/entity/order.entity';
-import { SetShippingOrderService } from '../use-case/set-shipping-order.service';
+import { SetShippingAddressService } from '../use-case/set-shipping-address.service';
 
 interface ItemDetail {
   productName: string;
@@ -28,7 +28,7 @@ export default class OrderController {
   constructor(
     private readonly createOrderService: CreateOrderService,
     private readonly payOrderService: PayOrderService,
-    private readonly setShippingOrderService: SetShippingOrderService,
+    private readonly setShippingAddressService: SetShippingAddressService,
   ) {}
 
   @Get()
@@ -51,6 +51,6 @@ export default class OrderController {
     @Param('id') id: string,
     @Body('shippingAddress') shippingAddress: string,
   ): Promise<Order> {
-    return await this.setShippingOrderService.shippingAddress(id, shippingAddress);
+    return await this.setShippingAddressService.shippingAddress(id, shippingAddress);
   }
 }
