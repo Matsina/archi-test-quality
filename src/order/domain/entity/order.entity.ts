@@ -8,6 +8,14 @@ import {
 } from 'typeorm';
 import { Expose } from 'class-transformer';
 
+export enum OrderStatus {
+  PENDING = 'PENDING',
+  PAID = 'PAID',
+  SHIPPED = 'SHIPPED',
+  DELIVERED = 'DELIVERED',
+  CANCELED = 'CANCELED',
+}
+
 @Entity()
 export class Order {
   static MAX_ITEMS = 5;
@@ -47,9 +55,21 @@ export class Order {
 
   @Column()
   @Expose({ groups: ['group_orders'] })
-  status: string;
+  private status: string;
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
-  paidAt: Date | null;
+  private paidAt: Date | null;
+
+  pay(): void {
+    if (this.status !== OrderStatus.PENDING) {
+      throw new Error('Order can only be paid if it is in PENDING status.');
+    }
+
+    if (this.price > 500) {
+      throw new Error('Order amount exceeds the maximum limit of 500€.');
+    }
+    this.status = OrderStatus.PAID;
+    this.paidAt = new Date('NOW');
+  }
 }

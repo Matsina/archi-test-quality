@@ -4,34 +4,25 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Order } from '../domain/entity/order.entity';
+import OrderRepository from '../infrastructure/order.repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PayOrderService {
-  private orders: Order[] = [];
+  constructor(
+    @InjectRepository(Order)
+    private readonly orderRepository: OrderRepository,
+  ) {}
 
-  constructor() {
-    const fakeOrder = new Order();
-    fakeOrder.id = '1';
-    fakeOrder.customerName = 'Francis';
-    fakeOrder.status = 'PENDING';
-    fakeOrder.price = 50;
-    this.orders.push(fakeOrder);
-  }
-
-  public payOrder(orderId: string): Order {
-    const order = this.orders.find((o) => o.id === orderId);
+  public async payOrder(orderId: string): Promise<Order> {
+    const order = await this.orderRepository.findById(orderId);
 
     if (!order) {
-      throw new NotFoundException('Order not found');
+      throw new NotFoundException('Pas de commande');
     }
 
-    if (order.status === 'PAID') {
-      throw new BadRequestException('Order is already paid');
-    }
+    order.pay();
 
-    order.status = 'PAID';
-    order.paidAt = new Date();
-
-    return order;
+    return this.orderRepository.save(order);
   }
 }
