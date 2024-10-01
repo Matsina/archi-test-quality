@@ -39,7 +39,7 @@ export default class OrderController {
     return this.createOrderService.createOrder(body);
   }
 
-  @Post(':id/pay')
+  @Post()
   async payOrder(@Param('id') id: string): Promise<Order> {
     try {
       return this.payOrderService.payOrder(id);
