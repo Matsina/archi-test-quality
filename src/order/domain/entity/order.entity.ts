@@ -44,7 +44,7 @@ export class Order {
     nullable: true,
   })
   @Expose({ groups: ['group_orders'] })
-  private orderItems: OrderItem[];
+  orderItems: OrderItem[];
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
