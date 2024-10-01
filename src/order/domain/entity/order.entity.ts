@@ -38,13 +38,13 @@ export class Order {
 
   @Column()
   @Expose({ groups: ['group_orders'] })
-  customerName: string;
+  private customerName: string;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     nullable: true,
   })
   @Expose({ groups: ['group_orders'] })
-  orderItems: OrderItem[];
+  private orderItems: OrderItem[];
 
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
