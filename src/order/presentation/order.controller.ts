@@ -9,6 +9,7 @@ import {
 import { CreateOrderService } from '../use-case/create-order.service';
 import { PayOrderService } from '../use-case/pay-order.service';
 import { Order } from '../domain/entity/order.entity';
+import { ShippingOrderService } from '../use-case/shipping-order.service';
 
 interface ItemDetail {
   productName: string;
@@ -27,6 +28,7 @@ export default class OrderController {
   constructor(
     private readonly createOrderService: CreateOrderService,
     private readonly payOrderService: PayOrderService,
+    private readonly shippingOrderService: ShippingOrderService,
   ) {}
 
   @Get()
@@ -41,10 +43,14 @@ export default class OrderController {
 
   @Post()
   async payOrder(@Param('id') id: string): Promise<Order> {
-    try {
-      return this.payOrderService.payOrder(id);
-    } catch (error) {
-      throw new NotFoundException(error.message);
-    }
+    return await this.payOrderService.payOrder(id);
+  }
+
+  @Post()
+  async shipOrder(
+    @Param('id') id: string,
+    @Body('shippingAddress') shippingAddress: string,
+  ): Promise<Order> {
+    return await this.shippingOrderService.shipOrder(id, shippingAddress);
   }
 }
