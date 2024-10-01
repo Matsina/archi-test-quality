@@ -177,4 +177,15 @@ export class Order {
     this.shippingAddressSetAt = new Date();
     this.status = OrderStatus.SHIPPED;
   }
+
+  setInvoiceAddress(invoiceAddress: string): void {
+    if (!this.shippingAddress) {
+      throw new Error(
+        'Une adresse de livraison doit être présente pour que celle de facturation soit remplie.',
+      );
+    }
+    if (!invoiceAddress) {
+      this.invoiceAddress = this.shippingAddress;
+    }
+  }
 }
