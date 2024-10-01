@@ -7,6 +7,19 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Expose } from 'class-transformer';
+import { BadRequestException } from '@nestjs/common';
+
+export interface ItemDetail {
+  productName: string;
+  price: number;
+}
+
+export interface CreateOrder {
+  items: ItemDetail[];
+  customerName: string;
+  shippingAddress: string;
+  invoiceAddress: string;
+}
 
 export enum OrderStatus {
   PENDING = 'PENDING',
@@ -63,6 +76,77 @@ export class Order {
   @Column({ nullable: true })
   @Expose({ groups: ['group_orders'] })
   private paidAt: Date | null;
+
+  public constructor(CreateOrder: CreateOrder) {
+    if (!CreateOrder) {
+      this.createdAt = new Date();
+      this.id = '1';
+      this.price = 0;
+      this.customerName = 'Sample Text';
+      this.shippingAddress = null;
+      this.invoiceAddress = null;
+      this.shippingAddressSetAt = null;
+      this.status = 'PENDING';
+      this.paidAt = null;
+      this.orderItems = null;
+      return;
+    }
+
+    const { items, customerName, shippingAddress, invoiceAddress } =
+      CreateOrder;
+
+    if (
+      !customerName ||
+      !items ||
+      items.length === 0 ||
+      !shippingAddress ||
+      !invoiceAddress
+    ) {
+      throw new BadRequestException('Missing required fields');
+    }
+
+    if (items.length > Order.MAX_ITEMS) {
+      throw new BadRequestException(
+        'Cannot create order with more than 5 items',
+      );
+    }
+
+    const totalAmount = this.calculateOrderAmount(items);
+  }
+
+  private validateFields(createOrderDto: CreateOrder) {
+    const { items, customerName, shippingAddress, invoiceAddress } =
+      createOrderDto;
+
+    if (
+      !customerName ||
+      !items ||
+      items.length === 0 ||
+      !shippingAddress ||
+      !invoiceAddress
+    ) {
+      throw new BadRequestException('Missing required fields');
+    }
+  }
+
+  private validateItemCount(items: ItemDetail[]) {
+    if (items.length > Order.MAX_ITEMS) {
+      throw new BadRequestException(
+        'Cannot create order with more than 5 items',
+      );
+    }
+  }
+
+  private calculateOrderAmount(items: ItemDetail[]): number {
+    const totalAmount = items.reduce((sum, item) => sum + item.price, 0);
+
+    if (totalAmount < Order.AMOUNT_MINIMUM) {
+      throw new BadRequestException(
+        'Cannot create order with total amount less than 10€',
+      );
+    }
+    return totalAmount;
+  }
 
   pay(): void {
     if (this.status !== OrderStatus.PENDING) {

@@ -37,8 +37,8 @@ export default class OrderController {
   }
 
   @Post()
-  async createOrder(@Body() body: CreateOrder): Promise<string> {
-    return this.createOrderService.createOrder(body);
+  async createOrder(@Body() body: CreateOrder): Promise<Order> {
+    return await this.createOrderService.createOrder(body);
   }
 
   @Post()
