@@ -85,17 +85,25 @@ export class Order {
   @Expose({ groups: ['group_orders'] })
   private cancellationReason: String | null;
 
+  @Column({ nullable: true })
+  @Expose({ groups: ['group_orders'] })
+  customerEmail: String | null;
+
+  @Column({ nullable: true })
+  @Expose({ groups: ['group_orders'] })
+  customerPhoneNumber: String | null;
+
   public constructor(CreateOrder: CreateOrder) {
     if (!CreateOrder) {
-      this.createdAt = new Date();
-      this.price = 0;
-      this.customerName = 'Sample Text';
-      this.shippingAddress = null;
-      this.invoiceAddress = null;
-      this.shippingAddressSetAt = null;
-      this.status = 'PENDING';
-      this.paidAt = null;
-      this.orderItems = null;
+      // this.createdAt = new Date();
+      // this.price = 0;
+      // this.customerName = 'Sample Text';
+      // this.shippingAddress = null;
+      // this.invoiceAddress = null;
+      // this.shippingAddressSetAt = null;
+      // this.status = 'PENDING';
+      // this.paidAt = null;
+      // this.orderItems = null;
       return;
     }
 
@@ -207,5 +215,9 @@ export class Order {
     if (!invoiceAddress) {
       this.invoiceAddress = this.shippingAddress;
     }
+  }
+
+  isValid(): boolean {
+    return true;
   }
 }
